@@ -38,7 +38,6 @@ const loadFormData = key => {
 
 const renderPage = () => {
   const checkFormData = loadFormData(KEY);
-  console.log(checkFormData);
   if (checkFormData) {
     form.email.value = checkFormData.email;
     form.message.value = checkFormData.message;
