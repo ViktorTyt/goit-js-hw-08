@@ -1,22 +1,14 @@
 import throttle from 'lodash.throttle';
 
-const form = document.querySelector('.feedback-form');
+const refs = {
+  form: document.querySelector('.feedback-form'),
+  email: document.querySelector('.feedback-form input'),
+  message: document.querySelector('.feedback-form textarea'),
+};
+
 const KEY = 'feedback-form-state';
+
 const formData = { email: '', message: '' };
-
-const createFormData = handleEvent => {
-  const formElements = handleEvent.currentTarget.elements;
-  const email = formElements.email.value;
-  const message = formElements.message.value;
-  formData.email = email;
-  formData.message = message;
-};
-
-const handleFormInput = event => {
-  createFormData(event);
-
-  saveFormData(KEY, formData);
-};
 
 const saveFormData = (key, value) => {
   try {
@@ -36,26 +28,42 @@ const loadFormData = key => {
   }
 };
 
+const createFormData = () => {
+  const email = refs.email.value;
+  const message = refs.message.value;
+
+  formData.email = email;
+  formData.message = message;
+};
+
 const renderPage = () => {
   const checkFormData = loadFormData(KEY);
+
   if (checkFormData) {
-    form.email.value = checkFormData.email;
-    form.message.value = checkFormData.message;
+    refs.email.value = checkFormData.email;
+    refs.message.value = checkFormData.message;
   }
+};
+
+const handleFormInput = () => {
+  createFormData();
+
+  saveFormData(KEY, formData);
 };
 
 const handleFormSubmit = event => {
   event.preventDefault();
 
-  createFormData(event);
+  createFormData();
 
   console.log(formData);
 
-  event.currentTarget.reset();
   localStorage.removeItem(KEY);
+
+  event.currentTarget.reset();
 };
 
 renderPage();
 
-form.addEventListener('input', throttle(handleFormInput, 500));
-form.addEventListener('submit', handleFormSubmit);
+refs.form.addEventListener('input', throttle(handleFormInput, 500));
+refs.form.addEventListener('submit', handleFormSubmit);
